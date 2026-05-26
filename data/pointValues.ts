@@ -57,7 +57,7 @@ export const pointValues: PointCurrency[] = [
     cpp: 2.0,
     type: "transferable",
     recommendation:
-      "Transfer to Hyatt or Turkish Airlines. Earn by paying rent with the Bilt Mastercard.",
+      "Transfer to Hyatt or Turkish Airlines. Earn by paying rent (or mortgage) with the Bilt Card.",
   },
   {
     id: "hilton",

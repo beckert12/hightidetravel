@@ -1,5 +1,10 @@
 // Seed credit card data. Edit freely — these objects drive the cards grid,
 // comparison bar, and homepage featured strip. Affiliate links are placeholders.
+//
+// Benefit figures below were verified against issuer pages and reputable points
+// sources in MAY 2026. Welcome bonuses and credits change frequently and vary by
+// application channel — ALWAYS confirm against your live affiliate offer before
+// treating these as published fact.
 
 export type CardCategory =
   | "Best Overall"
@@ -28,6 +33,8 @@ export type CreditCard = {
   tagline: string;
   /** Accent for the faux card face: tailwind gradient classes */
   faceGradient: string;
+  /** Card network, shown on the faux card face */
+  network?: string;
 };
 
 export const cardCategories: CardCategory[] = [
@@ -44,30 +51,33 @@ export const cards: CreditCard[] = [
     id: "amex-platinum",
     name: "The Platinum Card",
     issuer: "American Express",
-    annualFee: 695,
-    welcomeBonus: "80,000 Membership Rewards points after $8,000 spend in 6 months",
+    annualFee: 895,
+    welcomeBonus:
+      "150,000 Membership Rewards points after $8,000 spend in 6 months",
     perks: [
-      "$200 airline fee + $200 hotel credits annually",
-      "Centurion & Priority Pass lounge access",
-      "5x points on flights booked direct or via Amex Travel",
+      "Up to $600 in annual hotel credits (Fine Hotels + Resorts / The Hotel Collection)",
+      "Centurion, Priority Pass & Delta Sky Club lounge access",
+      "5x points on flights & prepaid hotels booked via Amex Travel",
     ],
-    rating: 4.8,
+    rating: 4.7,
     categories: ["Best Overall", "Travel"],
     pointsCurrency: "amex-mr",
     applyUrl: "#apply-amex-platinum",
     tagline: "The premium travel flagship.",
-    faceGradient: "from-slate-300 via-slate-100 to-slate-400",
+    faceGradient: "from-slate-200 via-slate-100 to-slate-400",
+    network: "Amex",
   },
   {
     id: "amex-gold",
     name: "American Express Gold Card",
     issuer: "American Express",
     annualFee: 325,
-    welcomeBonus: "60,000 Membership Rewards points after $6,000 spend in 6 months",
+    welcomeBonus:
+      "Up to 100,000 Membership Rewards points after $8,000 spend in 6 months",
     perks: [
-      "4x points at restaurants worldwide",
+      "4x points at restaurants worldwide (up to $50k/yr)",
       "4x points at U.S. supermarkets (up to $25k/yr)",
-      "$120 dining + $120 Uber Cash credits annually",
+      "$120 dining + $120 Uber Cash annual credits",
     ],
     rating: 4.7,
     categories: ["Travel", "Best Overall"],
@@ -75,17 +85,18 @@ export const cards: CreditCard[] = [
     applyUrl: "#apply-amex-gold",
     tagline: "The everyday points machine.",
     faceGradient: "from-yellow-200 via-amber-300 to-yellow-500",
+    network: "Amex",
   },
   {
     id: "csp",
     name: "Chase Sapphire Preferred",
     issuer: "Chase",
     annualFee: 95,
-    welcomeBonus: "60,000 Ultimate Rewards points after $5,000 spend in 3 months",
+    welcomeBonus: "75,000 Ultimate Rewards points after $5,000 spend in 3 months",
     perks: [
-      "5x on travel booked via Chase Travel",
-      "3x on dining and online groceries",
-      "25% redemption bonus through Chase Travel",
+      "5x on travel booked via Chase Travel, 3x on dining & online groceries",
+      "$50 annual Chase Travel hotel credit",
+      "Strong trip cancellation & interruption protection",
     ],
     rating: 4.8,
     categories: ["Best Overall", "Travel"],
@@ -93,24 +104,26 @@ export const cards: CreditCard[] = [
     applyUrl: "#apply-csp",
     tagline: "The best first travel card.",
     faceGradient: "from-royal via-royal-light to-sky-accent",
+    network: "Visa",
   },
   {
     id: "csr",
     name: "Chase Sapphire Reserve",
     issuer: "Chase",
-    annualFee: 550,
-    welcomeBonus: "60,000 Ultimate Rewards points after $5,000 spend in 3 months",
+    annualFee: 795,
+    welcomeBonus: "75,000 Ultimate Rewards points after $5,000 spend in 3 months",
     perks: [
-      "$300 annual travel credit",
-      "Priority Pass Select lounge access",
-      "10x on hotels & cars via Chase Travel, 3x on dining",
+      "$300 annual travel credit + up to $500/yr in The Edit hotel credits",
+      "Priority Pass & Chase Sapphire Lounge access",
+      "8x on Chase Travel, 4x on flights & hotels booked direct",
     ],
-    rating: 4.6,
+    rating: 4.5,
     categories: ["Travel", "Best Overall"],
     pointsCurrency: "chase-ur",
     applyUrl: "#apply-csr",
     tagline: "Premium perks, transferable points.",
     faceGradient: "from-navy-900 via-navy to-royal",
+    network: "Visa",
   },
   {
     id: "venture-x",
@@ -119,27 +132,28 @@ export const cards: CreditCard[] = [
     annualFee: 395,
     welcomeBonus: "75,000 miles after $4,000 spend in 3 months",
     perks: [
-      "$300 annual travel credit via Capital One Travel",
+      "$300 annual Capital One Travel credit",
       "10,000 anniversary bonus miles every year",
-      "Priority Pass + Capital One Lounge access",
+      "Priority Pass & Capital One Lounge access (guest access now limited)",
     ],
-    rating: 4.7,
+    rating: 4.6,
     categories: ["Travel", "Best Overall"],
     pointsCurrency: "capone",
     applyUrl: "#apply-venture-x",
     tagline: "Premium travel at a lower fee.",
     faceGradient: "from-slate-800 via-slate-600 to-slate-900",
+    network: "Visa",
   },
   {
     id: "citi-strata",
     name: "Citi Strata Premier",
     issuer: "Citi",
     annualFee: 95,
-    welcomeBonus: "70,000 ThankYou points after $4,000 spend in 3 months",
+    welcomeBonus: "60,000 ThankYou points after $4,000 spend in 3 months",
     perks: [
-      "10x on hotels, car rentals & attractions via Citi Travel",
-      "3x on air travel, dining, supermarkets & gas",
-      "$100 annual hotel savings benefit",
+      "10x on hotels, car rentals & attractions via CitiTravel.com",
+      "3x on air travel, dining, supermarkets, gas & EV charging",
+      "$100 annual hotel credit on $500+ stays via Citi Travel",
     ],
     rating: 4.5,
     categories: ["Travel"],
@@ -147,24 +161,26 @@ export const cards: CreditCard[] = [
     applyUrl: "#apply-citi-strata",
     tagline: "Underrated transfer-partner gem.",
     faceGradient: "from-sky-accent via-royal-light to-royal",
+    network: "Mastercard",
   },
   {
     id: "bilt",
-    name: "Bilt Mastercard",
-    issuer: "Wells Fargo",
+    name: "Bilt Card",
+    issuer: "Cardless / Column N.A.",
     annualFee: 0,
-    welcomeBonus: "No traditional bonus — earn points on rent with no fees",
+    welcomeBonus: "No traditional welcome bonus — earn points on rent with no fees",
     perks: [
-      "Pay rent with no transaction fee, earn points",
-      "3x dining, 2x travel, 1x rent",
+      "Pay rent (and now mortgage) with no transaction fee, earn points",
+      "Bilt 2.0 lineup: Blue ($0), Obsidian ($95) & Palladium ($495) tiers",
       "Transfer to 15+ airline & hotel partners",
     ],
-    rating: 4.4,
+    rating: 4.3,
     categories: ["No Annual Fee", "Travel"],
     pointsCurrency: "bilt",
     applyUrl: "#apply-bilt",
     tagline: "Turn rent into award trips.",
     faceGradient: "from-zinc-700 via-zinc-900 to-black",
+    network: "Mastercard",
   },
   {
     id: "hilton-aspire",
@@ -174,8 +190,8 @@ export const cards: CreditCard[] = [
     welcomeBonus: "175,000 Hilton Honors points after $6,000 spend in 6 months",
     perks: [
       "Complimentary Hilton Diamond status",
-      "$400 Hilton resort credit annually",
-      "Free night reward each card anniversary",
+      "$400 Hilton resort credit + $200 airline flight credit annually",
+      "Free Night Reward each card anniversary",
     ],
     rating: 4.5,
     categories: ["Hotel"],
@@ -183,17 +199,19 @@ export const cards: CreditCard[] = [
     applyUrl: "#apply-hilton-aspire",
     tagline: "Top-tier Hilton status & credits.",
     faceGradient: "from-sky-accent via-cyan-500 to-blue-700",
+    network: "Amex",
   },
   {
     id: "marriott-brilliant",
     name: "Marriott Bonvoy Brilliant",
     issuer: "American Express",
     annualFee: 650,
-    welcomeBonus: "95,000 Bonvoy points after $6,000 spend in 6 months",
+    welcomeBonus:
+      "100,000 Bonvoy points after $6,000 spend in 6 months (+50,000 after $2,000 more)",
     perks: [
       "Complimentary Marriott Platinum Elite status",
-      "$300 dining credit + $25/mo annually",
-      "85,000-point free night award each year",
+      "$300 annual dining credit ($25/month)",
+      "Annual Free Night Award (up to 85,000 points)",
     ],
     rating: 4.4,
     categories: ["Hotel"],
@@ -201,6 +219,7 @@ export const cards: CreditCard[] = [
     applyUrl: "#apply-marriott-brilliant",
     tagline: "Luxury Bonvoy stays & status.",
     faceGradient: "from-amber-700 via-orange-800 to-rose-900",
+    network: "Amex",
   },
 ];
 

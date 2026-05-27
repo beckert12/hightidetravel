@@ -101,6 +101,28 @@ The site's canonical URLs, sitemap, and metadata are already hard-coded to
 
 ---
 
+## AI Trip Planner — set the `ANTHROPIC_API_KEY` (required for `/points-tool`)
+
+The Trip Planner page (`/points-tool`) calls the Claude API from a Cloudflare
+Pages Function (`/api/plan-trip`, edge runtime). Without a key, the page loads
+fine but shows "Trip planner is not configured" when you submit.
+
+1. Get a key at [console.anthropic.com](https://console.anthropic.com).
+2. **Cloudflare:** Pages project → **Settings → Environment variables** → add
+   `ANTHROPIC_API_KEY` as an **encrypted** variable for **both Production and
+   Preview**, then redeploy.
+3. **Local dev:** copy `.env.local.example` to `.env.local` and paste your key.
+
+Cost/latency note: the planner uses `claude-opus-4-7` (best quality). Each plan
+costs a few cents. To trade some quality for speed/cost, change `MODEL` in
+[`app/api/plan-trip/route.ts`](./app/api/plan-trip/route.ts) to
+`claude-sonnet-4-6`.
+
+> The key is read server-side only (never exposed to the browser). Never commit
+> your real key — `.env.local` is git-ignored.
+
+---
+
 ## Local development & testing
 
 ```bash
@@ -119,14 +141,16 @@ CLI deploys over the GitHub integration (run `npx wrangler login` first).
 
 ## Editing content (no code required)
 
-All editable data lives in [`/data`](./data):
+Editable data and logic:
 
 - [`data/cards.ts`](./data/cards.ts) — credit card listings (fees, bonuses, perks,
   ratings, categories, affiliate `applyUrl` placeholders, featured cards).
-- [`data/pointValues.ts`](./data/pointValues.ts) — cents-per-point valuations and
-  transfer-partner recommendations for each currency.
-- [`data/estimator.ts`](./data/estimator.ts) — trip cost assumptions used by the
-  Points Tool (airfare and lodging by trip type).
+- [`lib/trip.ts`](./lib/trip.ts) — the AI Trip Planner's output schema, the
+  cents-per-point (CPP) thresholds (1.5¢ / 1.0¢), and the flight/hotel deep-link
+  builders (Google Flights, Kayak, Skyscanner, Google Hotels).
+- [`app/api/plan-trip/route.ts`](./app/api/plan-trip/route.ts) — the planner's
+  system prompt and Claude model (`claude-opus-4-7`; swap to `claude-sonnet-4-6`
+  for lower cost/latency).
 
 ## Branding
 

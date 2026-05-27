@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
-import PointsWizard from "@/components/PointsWizard";
+import TripPlanner from "@/components/TripPlanner";
 
 export const metadata: Metadata = {
-  title: "Points Tool — Award Trip Estimator",
+  title: "AI Trip Planner",
   description:
-    "Estimate the cash cost and points needed for your next trip. Tell us your destination, the point currencies you hold, and your travel style — we'll show points needed, value per point, and the best transfer partners.",
+    "Plan any trip with points and miles. Enter your route, dates, vibe, and points balance — High Tide Travel's AI planner returns the best flights, hotels, activities, and cash-vs-points (CPP) analysis with links to book.",
   alternates: { canonical: "/points-tool" },
   openGraph: {
-    title: "Points Tool · High Tide Travel",
+    title: "AI Trip Planner · High Tide Travel",
     description:
-      "Estimate the points needed for your next award trip across every major currency.",
+      "Tailored flights, hotels, activities, and cash-vs-points analysis for any trip.",
     url: "https://hightidetravel.co/points-tool",
   },
 };
@@ -19,13 +19,13 @@ export default function PointsToolPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Points Tool"
-        title="How many points for your dream trip?"
-        subtitle="Answer three quick questions and we'll estimate the cash cost, the points you'd need in each currency, and the smartest way to book."
+        eyebrow="Trip Planner"
+        title="Plan your next trip on points & miles"
+        subtitle="Give us your route, travel window, vibe, and points stash. We'll build a tailored plan — three flight and hotel options each, things to do, and cash-vs-points math so you book the smart way."
       />
       <div className="container-page py-12 sm:py-16">
-        <div className="mx-auto max-w-3xl">
-          <PointsWizard />
+        <div className="mx-auto max-w-5xl">
+          <TripPlanner />
         </div>
       </div>
     </>

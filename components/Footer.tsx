@@ -12,7 +12,7 @@ const footerNav = [
     title: "Explore",
     links: [
       { href: "/credit-cards", label: "Credit Cards" },
-      { href: "/points-tool", label: "Points Tool" },
+      { href: "/points-tool", label: "Trip Planner" },
       { href: "/podcast", label: "Podcast" },
       { href: "/about", label: "About" },
     ],
@@ -21,7 +21,7 @@ const footerNav = [
     title: "Resources",
     links: [
       { href: "/credit-cards", label: "Best Travel Cards" },
-      { href: "/points-tool", label: "Award Trip Estimator" },
+      { href: "/points-tool", label: "AI Trip Planner" },
       { href: "/#how-it-works", label: "How It Works" },
       { href: "/#newsletter", label: "Newsletter" },
     ],

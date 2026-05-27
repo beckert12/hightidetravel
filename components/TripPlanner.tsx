@@ -235,7 +235,7 @@ export default function TripPlanner() {
               Clear
             </button>
             <span className="text-xs text-white/40">
-              AI suggestions — we&apos;ll show live prices soon.
+              Cash &amp; points figures are seasonal estimates — verify before booking.
             </span>
           </div>
         </div>
@@ -335,17 +335,23 @@ export default function TripPlanner() {
                         </h4>
                         <p className="text-xs text-white/50">{f.routeNote}</p>
                       </div>
+                      {f.route && (
+                        <span className="flex-none rounded-md bg-white/10 px-2 py-1 font-mono text-xs font-semibold tracking-tight text-sky-accent">
+                          {f.route}
+                        </span>
+                      )}
                     </div>
                     {f.notes && (
                       <p className="text-sm text-white/60">{f.notes}</p>
                     )}
+                    <EstRow cash={f.cashEstimate} points={f.pointsTarget} />
                     {f.bestWaysToBook && (
                       <TipBox tone="sky" label="Best way to book (award)">
                         {f.bestWaysToBook}
                       </TipBox>
                     )}
                     {f.cardToUse && (
-                      <TipBox tone="gold" label="Pay cash with">
+                      <TipBox tone="gold" label="Best card to use">
                         {f.cardToUse}
                       </TipBox>
                     )}
@@ -377,8 +383,13 @@ export default function TripPlanner() {
                     {h.notes && (
                       <p className="text-sm text-white/60">{h.notes}</p>
                     )}
+                    <EstRow
+                      cash={h.cashEstimate}
+                      points={h.pointsTarget}
+                      perNight
+                    />
                     {h.cardToUse && (
-                      <TipBox tone="gold" label="Pay cash with">
+                      <TipBox tone="gold" label="Best card to use">
                         {h.cardToUse}
                       </TipBox>
                     )}
@@ -472,12 +483,11 @@ export default function TripPlanner() {
             </div>
 
             <p className="text-xs leading-relaxed text-white/40">
-              These are AI-generated suggestions to point you in the right
-              direction — flight/hotel availability, fares, and award space vary
+              Cash figures are seasonal ballpark estimates and points targets are
+              guidance — not live quotes. Fares, rates, and award space change
               constantly. Use the deep links to confirm cash prices, and check
               live award availability on seats.aero, point.me, or Roame before
-              transferring points or booking. Live cash &amp; points pricing is
-              coming soon.
+              transferring points or booking.
             </p>
           </motion.div>
         )}
@@ -549,6 +559,33 @@ function LinkRow({ links }: { links: { label: string; url: string }[] }) {
   );
 }
 
+function EstRow({
+  cash,
+  points,
+  perNight = false,
+}: {
+  cash: string;
+  points: string;
+  perNight?: boolean;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div className="rounded-lg bg-white/5 px-3 py-2">
+        <p className="text-[11px] uppercase tracking-wide text-white/40">
+          Est. cash{perNight ? " / night" : ""}
+        </p>
+        <p className="text-sm font-semibold text-white">{cash}</p>
+      </div>
+      <div className="rounded-lg bg-white/5 px-3 py-2">
+        <p className="text-[11px] uppercase tracking-wide text-white/40">
+          Points target
+        </p>
+        <p className="text-sm font-semibold text-sky-accent">{points}</p>
+      </div>
+    </div>
+  );
+}
+
 function TipBox({
   tone,
   label,
@@ -606,10 +643,13 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
 
   lines.push("FLIGHTS");
   plan.flights.forEach((f) => {
-    lines.push(`- ${f.airline} (${f.routeNote})`);
+    lines.push(`- ${f.airline} ${f.route} (${f.routeNote})`);
     if (f.notes) lines.push(`    ${f.notes}`);
+    lines.push(
+      `    Est. cash: ${f.cashEstimate} | Points target: ${f.pointsTarget}`
+    );
     if (f.bestWaysToBook) lines.push(`    Book award: ${f.bestWaysToBook}`);
-    if (f.cardToUse) lines.push(`    Pay cash with: ${f.cardToUse}`);
+    if (f.cardToUse) lines.push(`    Best card: ${f.cardToUse}`);
   });
   lines.push("");
 
@@ -617,7 +657,10 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
   plan.hotels.forEach((h) => {
     lines.push(`- ${h.name} (${h.area})`);
     if (h.notes) lines.push(`    ${h.notes}`);
-    if (h.cardToUse) lines.push(`    Pay cash with: ${h.cardToUse}`);
+    lines.push(
+      `    Est. cash: ${h.cashEstimate} | Points target: ${h.pointsTarget}`
+    );
+    if (h.cardToUse) lines.push(`    Best card: ${h.cardToUse}`);
   });
   lines.push("");
 

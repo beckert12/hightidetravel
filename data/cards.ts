@@ -272,7 +272,10 @@ export const cardEarnRates: Record<string, CardEarnInfo> = {
 // Compact reference block injected into the planner prompt so card mentions in
 // the user's free-text input map to accurate earning rates + currencies.
 export function cardReferenceText(): string {
-  const lines = ["KNOWN CARDS (earn rates points/$ — flights/hotels/dining/portal/other; currency; co-brand):"];
+  const lines = [
+    "KNOWN CARDS (earn rates points/$ — flights/hotels/dining/portal/other; currency; co-brand).",
+    "'portal' = the issuer's own travel portal ONLY (Chase/Amex/Capital One/Citi Travel), NOT direct bookings — always qualify it as 'via [Issuer] Travel'.",
+  ];
   for (const c of cards) {
     const info = cardEarnRates[c.id];
     if (!info) continue;

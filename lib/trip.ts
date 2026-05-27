@@ -3,11 +3,17 @@
 
 export type FlightOption = {
   airline: string;
+  /** Airport codes with an arrow, e.g. "IAH→LIS" */
+  route: string;
   routeNote: string;
   notes: string;
+  /** Best seasonal cash estimate (range) */
+  cashEstimate: string;
+  /** Recommended points target to aim for (range) */
+  pointsTarget: string;
   /** Best transfer-partner / alliance ways to book this as an award (multiple) */
   bestWaysToBook: string;
-  /** Which of the traveler's own cards to use if paying cash, + why */
+  /** Which of the traveler's own cards to use, + why */
   cardToUse: string;
 };
 
@@ -15,7 +21,11 @@ export type HotelOption = {
   name: string;
   area: string;
   notes: string;
-  /** Which of the traveler's own cards to use if paying cash, + why */
+  /** Best seasonal cash estimate per night (range) */
+  cashEstimate: string;
+  /** Recommended points target per night (range) */
+  pointsTarget: string;
+  /** Which of the traveler's own cards to use, + why */
   cardToUse: string;
 };
 
@@ -72,15 +82,21 @@ export const TRIP_PLAN_SCHEMA = {
         additionalProperties: false,
         properties: {
           airline: { type: "string" },
+          route: { type: "string" },
           routeNote: { type: "string" },
           notes: { type: "string" },
+          cashEstimate: { type: "string" },
+          pointsTarget: { type: "string" },
           bestWaysToBook: { type: "string" },
           cardToUse: { type: "string" },
         },
         required: [
           "airline",
+          "route",
           "routeNote",
           "notes",
+          "cashEstimate",
+          "pointsTarget",
           "bestWaysToBook",
           "cardToUse",
         ],
@@ -95,9 +111,18 @@ export const TRIP_PLAN_SCHEMA = {
           name: { type: "string" },
           area: { type: "string" },
           notes: { type: "string" },
+          cashEstimate: { type: "string" },
+          pointsTarget: { type: "string" },
           cardToUse: { type: "string" },
         },
-        required: ["name", "area", "notes", "cardToUse"],
+        required: [
+          "name",
+          "area",
+          "notes",
+          "cashEstimate",
+          "pointsTarget",
+          "cardToUse",
+        ],
       },
     },
     activities: {

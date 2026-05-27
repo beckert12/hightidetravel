@@ -101,25 +101,34 @@ The site's canonical URLs, sitemap, and metadata are already hard-coded to
 
 ---
 
-## AI Trip Planner — set the `ANTHROPIC_API_KEY` (required for `/points-tool`)
+## AI Trip Planner — enable the Workers AI binding (required for `/points-tool`)
 
-The Trip Planner page (`/points-tool`) calls the Claude API from a Cloudflare
-Pages Function (`/api/plan-trip`, edge runtime). Without a key, the page loads
-fine but shows "Trip planner is not configured" when you submit.
+The Trip Planner page (`/points-tool`) calls **Cloudflare Workers AI** from a
+Pages Function (`/api/plan-trip`, edge runtime). It runs on your Cloudflare
+account's free daily allowance — **no API key and no separate bill**. You just
+need to give the Pages project access to Workers AI via a binding named `AI`.
 
-1. Get a key at [console.anthropic.com](https://console.anthropic.com).
-2. **Cloudflare:** Pages project → **Settings → Environment variables** → add
-   `ANTHROPIC_API_KEY` as an **encrypted** variable for **both Production and
-   Preview**, then redeploy.
-3. **Local dev:** copy `.env.local.example` to `.env.local` and paste your key.
+1. In the Cloudflare dashboard → your Pages project → **Settings → Functions**
+   (or **Bindings**) → **Add binding** → **Workers AI**.
+2. **Variable name:** `AI` (exact). Save.
+3. **Redeploy** so the binding takes effect: **Deployments → ⋯ → Retry deployment**
+   (or push any change).
 
-Cost/latency note: the planner uses `claude-opus-4-7` (best quality). Each plan
-costs a few cents. To trade some quality for speed/cost, change `MODEL` in
-[`app/api/plan-trip/route.ts`](./app/api/plan-trip/route.ts) to
-`claude-sonnet-4-6`.
+The binding is also declared in [`wrangler.toml`](./wrangler.toml) (`[ai]`), which
+covers Wrangler/CLI deploys and local dev. For the GitHub-connected build, adding
+it in the dashboard is the reliable path.
 
-> The key is read server-side only (never exposed to the browser). Never commit
-> your real key — `.env.local` is git-ignored.
+Until the binding exists, the page loads but returns "AI is not available" on
+submit.
+
+- **Model:** `@cf/meta/llama-3.3-70b-instruct-fp8-fast` (set in
+  [`app/api/plan-trip/route.ts`](./app/api/plan-trip/route.ts)). Swap to
+  `@cf/meta/llama-3.1-8b-instruct` for faster/cheaper generation with more free
+  headroom.
+- **Local dev:** `npm run dev` works if you're logged into Wrangler (the AI
+  binding proxies to Cloudflare); otherwise use `npm run pages:dev` after a
+  Cloudflare build. Free-tier allowance and pricing:
+  [Workers AI pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
 
 ---
 
@@ -149,8 +158,7 @@ Editable data and logic:
   cents-per-point (CPP) thresholds (1.5¢ / 1.0¢), and the flight/hotel deep-link
   builders (Google Flights, Kayak, Skyscanner, Google Hotels).
 - [`app/api/plan-trip/route.ts`](./app/api/plan-trip/route.ts) — the planner's
-  system prompt and Claude model (`claude-opus-4-7`; swap to `claude-sonnet-4-6`
-  for lower cost/latency).
+  system prompt and Workers AI model (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`).
 
 ## Branding
 

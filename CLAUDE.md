@@ -30,8 +30,10 @@ to **Cloudflare Pages** via GitHub at **hightidetravel.co**.
 
 - `data/cards.ts` — credit card listings (verified May 2026; verify offers before publishing).
 - `lib/trip.ts` — AI Trip Planner schema, CPP thresholds, deep-link builders.
-- `app/api/plan-trip/route.ts` — Claude API call (model `claude-opus-4-7`).
-  Needs `ANTHROPIC_API_KEY` (Cloudflare env var + `.env.local`).
+- `app/api/plan-trip/route.ts` — calls **Cloudflare Workers AI** (model
+  `@cf/meta/llama-3.3-70b-instruct-fp8-fast`) via the `AI` binding. Free tier,
+  no API key. Requires a Workers AI binding named `AI` on the Pages project
+  (declared in `wrangler.toml` `[ai]` + add in dashboard for git builds).
 - `public/logo.png` (footer/favicon) + `public/logo-mark.png` (navbar emblem).
 
 See `DEPLOYMENT.md` for full deploy + env setup steps.

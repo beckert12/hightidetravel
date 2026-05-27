@@ -2,3 +2,9 @@ name = "high-tide-travel"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
+
+# Workers AI binding — powers the Trip Planner (/api/plan-trip).
+# Also add this binding in the Cloudflare dashboard for GitHub-connected builds:
+# Settings → Functions → Bindings → add Workers AI, variable name "AI".
+[ai]
+binding = "AI"

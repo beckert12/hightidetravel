@@ -6,6 +6,7 @@ import {
   evaluateCpp,
   flightDeepLinks,
   hotelDeepLinks,
+  awardSearchTools,
   usd,
   pts,
   type CppTone,
@@ -27,6 +28,8 @@ const emptyForm: TripInput = {
   endDate: "",
   tripLengthDays: 5,
   vibe: "",
+  cards: "",
+  status: "",
   pointsInventory: "",
 };
 
@@ -205,7 +208,27 @@ export default function TripPlanner() {
                 onChange={(e) => update("vibe", e.target.value)}
               />
             </Field>
-            <Field label="Points & miles you have">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Travel cards you have">
+                <textarea
+                  rows={2}
+                  className="input-field resize-none"
+                  placeholder="Amex Platinum, Chase Sapphire Reserve, Bilt"
+                  value={form.cards}
+                  onChange={(e) => update("cards", e.target.value)}
+                />
+              </Field>
+              <Field label="Elite status & perks">
+                <textarea
+                  rows={2}
+                  className="input-field resize-none"
+                  placeholder="Hyatt Globalist, United Silver, Southwest Companion Pass"
+                  value={form.status}
+                  onChange={(e) => update("status", e.target.value)}
+                />
+              </Field>
+            </div>
+            <Field label="Points & miles balances">
               <textarea
                 rows={2}
                 className="input-field resize-none"
@@ -311,6 +334,20 @@ export default function TripPlanner() {
 
             {/* flights */}
             <Section title="Flights" subtitle="Top 3 options for your route">
+              <div className="mb-5 flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/60">
+                <span>Check live award space &amp; mileage pricing on:</span>
+                {awardSearchTools.map((t) => (
+                  <a
+                    key={t.label}
+                    href={t.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-sky-accent hover:underline"
+                  >
+                    {t.label}
+                  </a>
+                ))}
+              </div>
               <div className="grid gap-5 lg:grid-cols-3">
                 {plan.flights.map((f, i) => (
                   <ResultCard key={i}>
@@ -331,6 +368,16 @@ export default function TripPlanner() {
                     <CppBadge cashUsd={f.cashEstUsd} points={f.pointsEst} />
                     {f.notes && (
                       <p className="text-sm text-white/60">{f.notes}</p>
+                    )}
+                    {f.bestWaysToBook && (
+                      <TipBox tone="sky" label="Best way to book (award)">
+                        {f.bestWaysToBook}
+                      </TipBox>
+                    )}
+                    {f.cardToUse && (
+                      <TipBox tone="gold" label="Pay cash with">
+                        {f.cardToUse}
+                      </TipBox>
                     )}
                     <LinkRow
                       links={flightDeepLinks(
@@ -369,6 +416,11 @@ export default function TripPlanner() {
                     />
                     {h.notes && (
                       <p className="text-sm text-white/60">{h.notes}</p>
+                    )}
+                    {h.cardToUse && (
+                      <TipBox tone="gold" label="Pay cash with">
+                        {h.cardToUse}
+                      </TipBox>
                     )}
                     <LinkRow
                       links={hotelDeepLinks(h.name, submitted.destination)}
@@ -423,6 +475,32 @@ export default function TripPlanner() {
                 </div>
               </div>
             </Section>
+
+            {/* card strategy */}
+            {plan.cardStrategy && (
+              <Section title="Card strategy" subtitle="Squeeze the most from every dollar">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Consideration
+                    label="Dining & everyday spend"
+                    text={plan.cardStrategy.dining}
+                  />
+                  <div className="card-surface h-full p-5">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gold">
+                      Worth considering
+                    </p>
+                    <p className="mt-1.5 text-sm text-white/70">
+                      {plan.cardStrategy.upsell}
+                    </p>
+                    <a
+                      href="/credit-cards"
+                      className="mt-3 inline-block text-xs font-semibold text-sky-accent hover:underline"
+                    >
+                      Compare cards →
+                    </a>
+                  </div>
+                </div>
+              </Section>
+            )}
 
             <div className="flex flex-wrap gap-3">
               <button onClick={handleCopy} className="btn-primary">
@@ -539,6 +617,32 @@ function LinkRow({ links }: { links: { label: string; url: string }[] }) {
   );
 }
 
+function TipBox({
+  tone,
+  label,
+  children,
+}: {
+  tone: "sky" | "gold";
+  label: string;
+  children: React.ReactNode;
+}) {
+  const box =
+    tone === "sky"
+      ? "border-sky-accent/25 bg-sky-accent/5"
+      : "border-gold/25 bg-gold/5";
+  const labelColor = tone === "sky" ? "text-sky-accent" : "text-gold";
+  return (
+    <div className={`rounded-lg border px-3 py-2 ${box}`}>
+      <p
+        className={`text-[11px] font-semibold uppercase tracking-wide ${labelColor}`}
+      >
+        {label}
+      </p>
+      <p className="mt-0.5 text-sm text-white/75">{children}</p>
+    </div>
+  );
+}
+
 function Consideration({ label, text }: { label: string; text: string }) {
   return (
     <div className="card-surface h-full p-5">
@@ -562,6 +666,8 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
     `Dates: ${input.startDate || "?"} to ${input.endDate || "?"} (${input.tripLengthDays} days)`
   );
   if (input.vibe) lines.push(`Vibe: ${input.vibe}`);
+  if (input.cards) lines.push(`Cards: ${input.cards}`);
+  if (input.status) lines.push(`Status/perks: ${input.status}`);
   lines.push("");
   lines.push(plan.summary);
   lines.push("");
@@ -575,6 +681,8 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
       )} ${f.pointsProgram} — ${v.cpp !== null ? v.cpp.toFixed(2) + "cpp, " : ""}${v.label}`
     );
     if (f.notes) lines.push(`    ${f.notes}`);
+    if (f.bestWaysToBook) lines.push(`    Book award: ${f.bestWaysToBook}`);
+    if (f.cardToUse) lines.push(`    Pay cash with: ${f.cardToUse}`);
   });
   lines.push("");
 
@@ -587,6 +695,7 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
       )}/nt ${h.pointsProgram} — ${v.cpp !== null ? v.cpp.toFixed(2) + "cpp, " : ""}${v.label}`
     );
     if (h.notes) lines.push(`    ${h.notes}`);
+    if (h.cardToUse) lines.push(`    Pay cash with: ${h.cardToUse}`);
   });
   lines.push("");
 
@@ -603,7 +712,17 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
   lines.push(`- Lounge access: ${plan.considerations.loungeAccess}`);
   lines.push(`- Destination tips: ${plan.considerations.destinationTips}`);
   lines.push("");
-  lines.push("Estimates only — verify live prices before booking.");
+
+  if (plan.cardStrategy) {
+    lines.push("CARD STRATEGY");
+    lines.push(`- Dining/everyday: ${plan.cardStrategy.dining}`);
+    lines.push(`- Worth considering: ${plan.cardStrategy.upsell}`);
+    lines.push("");
+  }
+
+  lines.push(
+    "Estimates only — verify live cash prices, and check award space on seats.aero / point.me / Roame, before booking."
+  );
   lines.push("Planned with High Tide Travel · hightidetravel.co");
 
   return lines.join("\n");

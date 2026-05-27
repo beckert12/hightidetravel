@@ -231,3 +231,56 @@ export const cardById = (id: string) => cards.find((c) => c.id === id);
 export const featuredCards = featuredCardIds
   .map(cardById)
   .filter((c): c is CreditCard => Boolean(c));
+
+// ---- Earning rates + co-brand (drives the Trip Planner's "which card to use"
+// recommendations). Multipliers are points/$ in each category. `portal` = the
+// issuer's own travel portal (Chase/Amex/Capital One/Citi Travel). `coBrand`
+// flags airline/hotel cards that should win for that brand's purchases.
+// Approximate current rates — edit freely.
+
+export type CardEarn = {
+  flights: number;
+  hotels: number;
+  dining: number;
+  portal: number;
+  other: number;
+};
+
+export type CardEarnInfo = {
+  earn: CardEarn;
+  coBrand?: { type: "airline" | "hotel"; program: string };
+};
+
+export const cardEarnRates: Record<string, CardEarnInfo> = {
+  "amex-platinum": { earn: { flights: 5, hotels: 5, dining: 1, portal: 5, other: 1 } },
+  "amex-gold": { earn: { flights: 3, hotels: 1, dining: 4, portal: 2, other: 1 } },
+  csp: { earn: { flights: 2, hotels: 2, dining: 3, portal: 5, other: 1 } },
+  csr: { earn: { flights: 4, hotels: 4, dining: 3, portal: 8, other: 1 } },
+  "venture-x": { earn: { flights: 2, hotels: 2, dining: 2, portal: 10, other: 2 } },
+  "citi-strata": { earn: { flights: 3, hotels: 3, dining: 3, portal: 10, other: 1 } },
+  bilt: { earn: { flights: 2, hotels: 2, dining: 2, portal: 2, other: 2 } },
+  "hilton-aspire": {
+    earn: { flights: 7, hotels: 14, dining: 7, portal: 7, other: 3 },
+    coBrand: { type: "hotel", program: "Hilton Honors" },
+  },
+  "marriott-brilliant": {
+    earn: { flights: 3, hotels: 6, dining: 3, portal: 3, other: 2 },
+    coBrand: { type: "hotel", program: "Marriott Bonvoy" },
+  },
+};
+
+// Compact reference block injected into the planner prompt so card mentions in
+// the user's free-text input map to accurate earning rates + currencies.
+export function cardReferenceText(): string {
+  const lines = ["KNOWN CARDS (earn rates points/$ — flights/hotels/dining/portal/other; currency; co-brand):"];
+  for (const c of cards) {
+    const info = cardEarnRates[c.id];
+    if (!info) continue;
+    const e = info.earn;
+    const co = info.coBrand ? ` co-brand:${info.coBrand.program}` : "";
+    lines.push(
+      `- ${c.name} (${c.issuer}): ${e.flights}/${e.hotels}/${e.dining}/${e.portal}/${e.other}; currency:${c.pointsCurrency ?? "none"}${co}`
+    );
+  }
+  return lines.join("\n");
+}

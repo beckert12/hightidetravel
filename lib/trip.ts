@@ -8,6 +8,10 @@ export type FlightOption = {
   pointsProgram: string;
   pointsEst: number;
   notes: string;
+  /** Best transfer-partner / alliance way to book this as an award */
+  bestWaysToBook: string;
+  /** Which of the traveler's cards to use if paying cash, + why */
+  cardToUse: string;
 };
 
 export type HotelOption = {
@@ -17,6 +21,8 @@ export type HotelOption = {
   pointsProgram: string;
   pointsPerNight: number;
   notes: string;
+  /** Which of the traveler's cards to use if paying cash, + why */
+  cardToUse: string;
 };
 
 export type Activity = { title: string; description: string };
@@ -29,12 +35,20 @@ export type Considerations = {
   destinationTips: string;
 };
 
+export type CardStrategy = {
+  /** Best card from their wallet for dining/everyday spend on the trip */
+  dining: string;
+  /** Soft nudge toward a card they don't have that would shine on this trip */
+  upsell: string;
+};
+
 export type TripPlan = {
   summary: string;
   flights: FlightOption[];
   hotels: HotelOption[];
   activities: Activity[];
   considerations: Considerations;
+  cardStrategy: CardStrategy;
 };
 
 export type TripInput = {
@@ -44,6 +58,8 @@ export type TripInput = {
   endDate: string;
   tripLengthDays: number;
   vibe: string;
+  cards: string;
+  status: string;
   pointsInventory: string;
 };
 
@@ -67,6 +83,8 @@ export const TRIP_PLAN_SCHEMA = {
           pointsProgram: { type: "string" },
           pointsEst: { type: "number" },
           notes: { type: "string" },
+          bestWaysToBook: { type: "string" },
+          cardToUse: { type: "string" },
         },
         required: [
           "airline",
@@ -75,6 +93,8 @@ export const TRIP_PLAN_SCHEMA = {
           "pointsProgram",
           "pointsEst",
           "notes",
+          "bestWaysToBook",
+          "cardToUse",
         ],
       },
     },
@@ -90,6 +110,7 @@ export const TRIP_PLAN_SCHEMA = {
           pointsProgram: { type: "string" },
           pointsPerNight: { type: "number" },
           notes: { type: "string" },
+          cardToUse: { type: "string" },
         },
         required: [
           "name",
@@ -98,6 +119,7 @@ export const TRIP_PLAN_SCHEMA = {
           "pointsProgram",
           "pointsPerNight",
           "notes",
+          "cardToUse",
         ],
       },
     },
@@ -131,8 +153,24 @@ export const TRIP_PLAN_SCHEMA = {
         "destinationTips",
       ],
     },
+    cardStrategy: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        dining: { type: "string" },
+        upsell: { type: "string" },
+      },
+      required: ["dining", "upsell"],
+    },
   },
-  required: ["summary", "flights", "hotels", "activities", "considerations"],
+  required: [
+    "summary",
+    "flights",
+    "hotels",
+    "activities",
+    "considerations",
+    "cardStrategy",
+  ],
 } as const;
 
 // ---- CPP (cents-per-point) verdict ------------------------------------------
@@ -219,6 +257,14 @@ export function hotelDeepLinks(
     },
   ];
 }
+
+// Award-availability search tools (live award space + mileage pricing).
+// These require their own logins; we link to the tools to check real space.
+export const awardSearchTools: { label: string; url: string }[] = [
+  { label: "seats.aero", url: "https://seats.aero" },
+  { label: "point.me", url: "https://point.me" },
+  { label: "Roame", url: "https://roame.travel" },
+];
 
 // ---- Formatting --------------------------------------------------------------
 

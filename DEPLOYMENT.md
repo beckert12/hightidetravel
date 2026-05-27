@@ -155,8 +155,13 @@ Editable data and logic:
 - [`data/cards.ts`](./data/cards.ts) — credit card listings (fees, bonuses, perks,
   ratings, categories, affiliate `applyUrl` placeholders, featured cards).
 - [`lib/trip.ts`](./lib/trip.ts) — the AI Trip Planner's output schema, the
-  cents-per-point (CPP) thresholds (1.5¢ / 1.0¢), and the flight/hotel deep-link
-  builders (Google Flights, Kayak, Skyscanner, Google Hotels).
+  cents-per-point (CPP) thresholds (1.5¢ / 1.0¢), the flight/hotel deep-link
+  builders, and the award-search tool links (seats.aero / point.me / Roame).
+- [`data/transferPartners.ts`](./data/transferPartners.ts) — transfer ratios,
+  airline alliances, and sweet-spot booking heuristics that ground the planner's
+  "best ways to book" advice. Verified May 2026 — update as programs change.
+- `cardEarnRates` in [`data/cards.ts`](./data/cards.ts) — per-card earning
+  multipliers + co-brand info that drive the "which card to use" recommendations.
 - [`app/api/plan-trip/route.ts`](./app/api/plan-trip/route.ts) — the planner's
   system prompt and Workers AI model (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`).
 

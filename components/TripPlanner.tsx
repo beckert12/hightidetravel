@@ -64,6 +64,10 @@ export default function TripPlanner() {
   const [plan, setPlan] = useState<TripPlan | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState<{
+    message: string;
+    capacity: boolean;
+  } | null>(null);
   const [copied, setCopied] = useState(false);
 
   function update<K extends keyof TripInput>(key: K, value: TripInput[K]) {
@@ -77,6 +81,7 @@ export default function TripPlanner() {
       return;
     }
     setError("");
+    setNotice(null);
     setLoading(true);
     setPlan(null);
     try {
@@ -87,13 +92,20 @@ export default function TripPlanner() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data?.error || "Something went wrong. Please try again.");
+        setNotice({
+          message: data?.error || "Something went wrong. Please try again.",
+          capacity: !!data?.capacity,
+        });
       } else {
         setPlan(data.plan as TripPlan);
         setSubmitted(form);
       }
     } catch {
-      setError("Network error — please check your connection and try again.");
+      setNotice({
+        message:
+          "Network error — please check your connection and try again.",
+        capacity: false,
+      });
     } finally {
       setLoading(false);
     }
@@ -104,6 +116,7 @@ export default function TripPlanner() {
     setPlan(null);
     setSubmitted(null);
     setError("");
+    setNotice(null);
   }
 
   async function handleCopy() {
@@ -237,6 +250,36 @@ export default function TripPlanner() {
             Charting your course — comparing flights, hotels, and points…
           </p>
         </div>
+      )}
+
+      {/* ---- Notice (capacity / error) ---- */}
+      {notice && !loading && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`card-surface p-8 text-center ${
+            notice.capacity ? "border-gold/40" : "border-rose-400/40"
+          }`}
+        >
+          <span className="text-4xl">{notice.capacity ? "🌙" : "⚠️"}</span>
+          <h3 className="mt-4 font-display text-xl font-semibold text-white">
+            {notice.capacity
+              ? "We've hit today's high tide"
+              : "Something went wrong"}
+          </h3>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-white/65">
+            {notice.message}
+          </p>
+          {notice.capacity && (
+            <p className="mx-auto mt-3 max-w-md text-xs text-white/40">
+              In the meantime, browse our{" "}
+              <a href="/credit-cards" className="text-sky-accent hover:underline">
+                credit card picks
+              </a>{" "}
+              to stock up on points.
+            </p>
+          )}
+        </motion.div>
       )}
 
       {/* ---- Results ---- */}

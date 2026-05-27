@@ -48,6 +48,36 @@ function extractJson(raw: string): unknown {
   return JSON.parse(candidate.slice(start, end + 1));
 }
 
+function classifyError(err: unknown): {
+  status: number;
+  error: string;
+  capacity?: boolean;
+} {
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  // Daily free Neuron allowance exhausted.
+  if (/(neuron|daily|quota|exceed|out of|limit)/.test(msg)) {
+    return {
+      status: 429,
+      capacity: true,
+      error:
+        "We've reached today's free planning limit. The Trip Planner resets daily (around midnight UTC) — please check back tomorrow.",
+    };
+  }
+  // Model temporarily overloaded / transient rate limit.
+  if (/(capacity|overload|3040|too many|rate|unavailable|busy|429|503)/.test(msg)) {
+    return {
+      status: 503,
+      capacity: true,
+      error:
+        "The planner is busy right now. Give it a minute and try again.",
+    };
+  }
+  return {
+    status: 502,
+    error: "The planning service returned an error. Please try again.",
+  };
+}
+
 async function generate(ai: WorkersAI, messages: unknown[]) {
   // Prefer schema-constrained output; fall back to a plain run if the model
   // (or Workers AI version) rejects response_format.
@@ -100,9 +130,10 @@ export async function POST(req: Request) {
     out = await generate(ai, messages);
   } catch (err) {
     console.error("Workers AI error", err);
+    const c = classifyError(err);
     return Response.json(
-      { error: "The planning service returned an error. Please try again." },
-      { status: 502 }
+      { error: c.error, capacity: c.capacity ?? false },
+      { status: c.status }
     );
   }
 

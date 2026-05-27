@@ -3,23 +3,12 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  evaluateCpp,
   flightDeepLinks,
   hotelDeepLinks,
   awardSearchTools,
-  usd,
-  pts,
-  type CppTone,
   type TripInput,
   type TripPlan,
 } from "@/lib/trip";
-
-const TONE_STYLES: Record<CppTone, string> = {
-  great: "bg-emerald-400/15 text-emerald-300 border-emerald-400/40",
-  fair: "bg-gold/15 text-gold border-gold/40",
-  cash: "bg-rose-500/15 text-rose-300 border-rose-400/40",
-  none: "bg-white/10 text-white/50 border-white/15",
-};
 
 const emptyForm: TripInput = {
   origin: "",
@@ -32,18 +21,6 @@ const emptyForm: TripInput = {
   status: "",
   pointsInventory: "",
 };
-
-function CppBadge({ cashUsd, points }: { cashUsd: number; points: number }) {
-  const v = evaluateCpp(cashUsd, points);
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${TONE_STYLES[v.tone]}`}
-    >
-      {v.cpp !== null && <span className="tabular-nums">{v.cpp.toFixed(2)}¢</span>}
-      {v.label}
-    </span>
-  );
-}
 
 function Waves() {
   return (
@@ -147,8 +124,8 @@ export default function TripPlanner() {
             Tell us about your trip
           </h2>
           <p className="mt-1 text-sm text-white/55">
-            Give us the basics and your points stash — we&apos;ll build a tailored
-            plan with cash vs. points math.
+            Give us the basics, your cards, and your points stash — we&apos;ll
+            recommend the best ways to book and which card to use.
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -258,7 +235,7 @@ export default function TripPlanner() {
               Clear
             </button>
             <span className="text-xs text-white/40">
-              Estimates only — click through to book & confirm live prices.
+              AI suggestions — we&apos;ll show live prices soon.
             </span>
           </div>
         </div>
@@ -359,13 +336,6 @@ export default function TripPlanner() {
                         <p className="text-xs text-white/50">{f.routeNote}</p>
                       </div>
                     </div>
-                    <PriceRow
-                      cashLabel="Cash (round-trip)"
-                      cash={usd(f.cashEstUsd)}
-                      pointsLabel={f.pointsProgram}
-                      points={pts(f.pointsEst)}
-                    />
-                    <CppBadge cashUsd={f.cashEstUsd} points={f.pointsEst} />
                     {f.notes && (
                       <p className="text-sm text-white/60">{f.notes}</p>
                     )}
@@ -404,16 +374,6 @@ export default function TripPlanner() {
                       </h4>
                       <p className="text-xs text-white/50">{h.area}</p>
                     </div>
-                    <PriceRow
-                      cashLabel="Cash / night"
-                      cash={usd(h.cashPerNightUsd)}
-                      pointsLabel={h.pointsProgram}
-                      points={pts(h.pointsPerNight)}
-                    />
-                    <CppBadge
-                      cashUsd={h.cashPerNightUsd}
-                      points={h.pointsPerNight}
-                    />
                     {h.notes && (
                       <p className="text-sm text-white/60">{h.notes}</p>
                     )}
@@ -512,11 +472,12 @@ export default function TripPlanner() {
             </div>
 
             <p className="text-xs leading-relaxed text-white/40">
-              All flight prices, hotel rates, and award costs are AI-generated
-              estimates and will vary by date, availability, and fare class. Use
-              the deep links to verify live pricing before booking. CPP =
-              cents-per-point (cash value ÷ points). Above 1.5¢ is a great
-              redemption; below 1.0¢, paying cash usually wins.
+              These are AI-generated suggestions to point you in the right
+              direction — flight/hotel availability, fares, and award space vary
+              constantly. Use the deep links to confirm cash prices, and check
+              live award availability on seats.aero, point.me, or Roame before
+              transferring points or booking. Live cash &amp; points pricing is
+              coming soon.
             </p>
           </motion.div>
         )}
@@ -567,35 +528,6 @@ function Section({
 function ResultCard({ children }: { children: React.ReactNode }) {
   return (
     <div className="card-surface flex flex-col gap-3 p-5">{children}</div>
-  );
-}
-
-function PriceRow({
-  cashLabel,
-  cash,
-  pointsLabel,
-  points,
-}: {
-  cashLabel: string;
-  cash: string;
-  pointsLabel: string;
-  points: string;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      <div className="rounded-lg bg-white/5 px-3 py-2">
-        <p className="text-[11px] uppercase tracking-wide text-white/40">
-          {cashLabel}
-        </p>
-        <p className="font-display font-bold text-white">{cash}</p>
-      </div>
-      <div className="rounded-lg bg-white/5 px-3 py-2">
-        <p className="truncate text-[11px] uppercase tracking-wide text-white/40">
-          {pointsLabel}
-        </p>
-        <p className="font-display font-bold text-sky-accent">{points}</p>
-      </div>
-    </div>
   );
 }
 
@@ -674,12 +606,7 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
 
   lines.push("FLIGHTS");
   plan.flights.forEach((f) => {
-    const v = evaluateCpp(f.cashEstUsd, f.pointsEst);
-    lines.push(
-      `- ${f.airline} (${f.routeNote}): ${usd(f.cashEstUsd)} or ${pts(
-        f.pointsEst
-      )} ${f.pointsProgram} — ${v.cpp !== null ? v.cpp.toFixed(2) + "cpp, " : ""}${v.label}`
-    );
+    lines.push(`- ${f.airline} (${f.routeNote})`);
     if (f.notes) lines.push(`    ${f.notes}`);
     if (f.bestWaysToBook) lines.push(`    Book award: ${f.bestWaysToBook}`);
     if (f.cardToUse) lines.push(`    Pay cash with: ${f.cardToUse}`);
@@ -688,12 +615,7 @@ function buildSummaryText(plan: TripPlan, input: TripInput): string {
 
   lines.push("HOTELS");
   plan.hotels.forEach((h) => {
-    const v = evaluateCpp(h.cashPerNightUsd, h.pointsPerNight);
-    lines.push(
-      `- ${h.name} (${h.area}): ${usd(h.cashPerNightUsd)}/nt or ${pts(
-        h.pointsPerNight
-      )}/nt ${h.pointsProgram} — ${v.cpp !== null ? v.cpp.toFixed(2) + "cpp, " : ""}${v.label}`
-    );
+    lines.push(`- ${h.name} (${h.area})`);
     if (h.notes) lines.push(`    ${h.notes}`);
     if (h.cardToUse) lines.push(`    Pay cash with: ${h.cardToUse}`);
   });

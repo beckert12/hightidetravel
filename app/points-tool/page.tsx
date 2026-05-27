@@ -21,7 +21,7 @@ export default function PointsToolPage() {
       <PageHeader
         eyebrow="Trip Planner"
         title="Plan your next trip on points & miles"
-        subtitle="Give us your route, travel window, vibe, and points stash. We'll build a tailored plan — three flight and hotel options each, things to do, and cash-vs-points math so you book the smart way."
+        subtitle="Give us your route, travel window, vibe, cards, and points stash. We'll build a tailored plan — three flight and hotel options each, the smartest transfer partners to book them, which of your cards to use, and things to do."
       />
       <div className="container-page py-12 sm:py-16">
         <div className="mx-auto max-w-5xl">

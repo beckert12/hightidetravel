@@ -258,7 +258,7 @@ export const cardEarnRates: Record<string, CardEarnInfo> = {
   csr: { earn: { flights: 4, hotels: 4, dining: 3, portal: 8, other: 1 } },
   "venture-x": { earn: { flights: 2, hotels: 2, dining: 2, portal: 10, other: 2 } },
   "citi-strata": { earn: { flights: 3, hotels: 3, dining: 3, portal: 10, other: 1 } },
-  bilt: { earn: { flights: 2, hotels: 2, dining: 2, portal: 2, other: 2 } },
+  bilt: { earn: { flights: 2, hotels: 2, dining: 3, portal: 2, other: 2 } },
   "hilton-aspire": {
     earn: { flights: 7, hotels: 14, dining: 7, portal: 7, other: 3 },
     coBrand: { type: "hotel", program: "Hilton Honors" },

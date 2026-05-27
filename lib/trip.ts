@@ -4,24 +4,18 @@
 export type FlightOption = {
   airline: string;
   routeNote: string;
-  cashEstUsd: number;
-  pointsProgram: string;
-  pointsEst: number;
   notes: string;
-  /** Best transfer-partner / alliance way to book this as an award */
+  /** Best transfer-partner / alliance ways to book this as an award (multiple) */
   bestWaysToBook: string;
-  /** Which of the traveler's cards to use if paying cash, + why */
+  /** Which of the traveler's own cards to use if paying cash, + why */
   cardToUse: string;
 };
 
 export type HotelOption = {
   name: string;
   area: string;
-  cashPerNightUsd: number;
-  pointsProgram: string;
-  pointsPerNight: number;
   notes: string;
-  /** Which of the traveler's cards to use if paying cash, + why */
+  /** Which of the traveler's own cards to use if paying cash, + why */
   cardToUse: string;
 };
 
@@ -79,9 +73,6 @@ export const TRIP_PLAN_SCHEMA = {
         properties: {
           airline: { type: "string" },
           routeNote: { type: "string" },
-          cashEstUsd: { type: "number" },
-          pointsProgram: { type: "string" },
-          pointsEst: { type: "number" },
           notes: { type: "string" },
           bestWaysToBook: { type: "string" },
           cardToUse: { type: "string" },
@@ -89,9 +80,6 @@ export const TRIP_PLAN_SCHEMA = {
         required: [
           "airline",
           "routeNote",
-          "cashEstUsd",
-          "pointsProgram",
-          "pointsEst",
           "notes",
           "bestWaysToBook",
           "cardToUse",
@@ -106,21 +94,10 @@ export const TRIP_PLAN_SCHEMA = {
         properties: {
           name: { type: "string" },
           area: { type: "string" },
-          cashPerNightUsd: { type: "number" },
-          pointsProgram: { type: "string" },
-          pointsPerNight: { type: "number" },
           notes: { type: "string" },
           cardToUse: { type: "string" },
         },
-        required: [
-          "name",
-          "area",
-          "cashPerNightUsd",
-          "pointsProgram",
-          "pointsPerNight",
-          "notes",
-          "cardToUse",
-        ],
+        required: ["name", "area", "notes", "cardToUse"],
       },
     },
     activities: {

@@ -8,7 +8,7 @@ import Logo from "./Logo";
 
 const navLinks = [
   { href: "/credit-cards", label: "Credit Cards" },
-  { href: "/points-tool", label: "Trip Planner" },
+  { href: "/traveltool", label: "Trip Planner" },
   { href: "/podcast", label: "Podcast" },
   { href: "/about", label: "About" },
 ];

@@ -16,6 +16,12 @@ const nextConfig = {
     // Cloudflare Pages doesn't run the Next.js image optimizer.
     unoptimized: true,
   },
+  // The Trip Planner moved from /points-tool to /traveltool — keep old links working.
+  async redirects() {
+    return [
+      { source: "/points-tool", destination: "/traveltool", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

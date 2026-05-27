@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import NewsletterForm from "@/components/NewsletterForm";
@@ -48,15 +49,15 @@ export default function AboutPage() {
         <section className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <Reveal>
             <div className="relative mx-auto w-full max-w-sm">
-              {/* Image slot — drop a host photo at /public/host.jpg and swap in next/image */}
-              <div className="card-surface flex aspect-[4/5] items-center justify-center rounded-3xl bg-hero-gradient">
-                <div className="text-center text-white/40">
-                  <span className="text-5xl">🧳</span>
-                  <p className="mt-3 text-sm">Host photo</p>
-                  <p className="text-xs text-white/30">
-                    (add /public/host.jpg)
-                  </p>
-                </div>
+              <div className="card-surface relative aspect-[4/5] overflow-hidden rounded-3xl ring-1 ring-white/10">
+                <Image
+                  src="/host.jpg"
+                  alt="Ben Eckert, host of High Tide Travel"
+                  fill
+                  sizes="(min-width: 1024px) 24rem, 100vw"
+                  className="object-cover object-center"
+                  priority
+                />
               </div>
             </div>
           </Reveal>

@@ -5,7 +5,7 @@ export const runtime = "edge";
 const SITE_URL = "https://hightidetravel.co";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/credit-cards", "/points-tool", "/podcast", "/about"];
+  const routes = ["", "/credit-cards", "/traveltool", "/podcast", "/about"];
   const now = new Date();
   return routes.map((path) => ({
     url: `${SITE_URL}${path}`,

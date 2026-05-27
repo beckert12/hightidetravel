@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: "AI Trip Planner",
   description:
     "Plan any trip with points and miles. Enter your route, dates, vibe, and points balance — High Tide Travel's AI planner returns the best flights, hotels, activities, and cash-vs-points (CPP) analysis with links to book.",
-  alternates: { canonical: "/points-tool" },
+  alternates: { canonical: "/traveltool" },
   openGraph: {
     title: "AI Trip Planner · High Tide Travel",
     description:
-      "Tailored flights, hotels, activities, and cash-vs-points analysis for any trip.",
-    url: "https://hightidetravel.co/points-tool",
+      "Tailored flights, hotels, activities, and points booking strategy for any trip.",
+    url: "https://hightidetravel.co/traveltool",
   },
 };
 

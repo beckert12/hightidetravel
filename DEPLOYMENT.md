@@ -101,9 +101,9 @@ The site's canonical URLs, sitemap, and metadata are already hard-coded to
 
 ---
 
-## AI Trip Planner — enable the Workers AI binding (required for `/points-tool`)
+## AI Trip Planner — enable the Workers AI binding (required for `/traveltool`)
 
-The Trip Planner page (`/points-tool`) calls **Cloudflare Workers AI** from a
+The Trip Planner page (`/traveltool`) calls **Cloudflare Workers AI** from a
 Pages Function (`/api/plan-trip`, edge runtime). It runs on your Cloudflare
 account's free daily allowance — **no API key and no separate bill**. You just
 need to give the Pages project access to Workers AI via a binding named `AI`.

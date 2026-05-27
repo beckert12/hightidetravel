@@ -5,10 +5,15 @@ to **Cloudflare Pages** via GitHub at **hightidetravel.co**.
 
 ## Working agreement
 
-- **Auto-push to deploy.** Whenever the user asks for a change, after making it
-  and verifying the build, **commit and `git push origin main` without asking**.
-  Pushing triggers the Cloudflare Pages auto-deploy. (Only skip the push if the
-  task made no committable changes, e.g. a pure question.)
+- **Auto-push to deploy.** When the user requests an edit/build of the site,
+  finish the change, verify the build, then **commit and `git push origin main`
+  without asking** — push as soon as that requested change is done. Pushing
+  triggers the Cloudflare Pages auto-deploy.
+  - Push **once per completed request**, at the end — not mid-build and not after
+    each intermediate step of a multi-step task. If the work spans several
+    commits, push when the whole requested change is finished and verified.
+  - Skip the push only when a request produces nothing to commit (e.g. a pure
+    question or research).
 - Always co-author commits and write a clear message; never force-push.
 - Verify with `npm run build` (and `npx @cloudflare/next-on-pages` for deploy-
   affecting changes) before pushing.
